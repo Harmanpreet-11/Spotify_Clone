@@ -103,6 +103,17 @@ async function main() {
         currentSong.currentTime = ((currentSong.duration) * percent )/100
         
     });
+
+    // Toggle sidebar open on hamburger click
+document.querySelector(".hamburger").addEventListener("click", () => {
+    document.querySelector(".left").style.left = "0";
+});
+
+// Toggle sidebar close on 'x' button click
+document.querySelector(".close").addEventListener("click", () => {
+    document.querySelector(".left").style.left = "-120%";
+});
+s
 }
 
 
