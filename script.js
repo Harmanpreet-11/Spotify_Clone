@@ -1,10 +1,10 @@
 console.log('Lets write Javascript');
 let currentSong = new Audio();
+let songs;
 
-
-function secondsToMinutesSecond(seconds){
-    if(isNaN(seconds) || seconds <0){
-        return "Invalid input";
+function secondsToMinutesSecond(seconds) {
+    if (isNaN(seconds) || seconds < 0) {
+        return "00:00";
     }
 
     const minutes = Math.floor(seconds / 60);
@@ -15,40 +15,46 @@ function secondsToMinutesSecond(seconds){
 
     return `${formattedMinutes}:${formattedSeconds}`;
 }
+
 async function getSongs() {
-    
-let a = await fetch("http://127.0.0.1:5500/spotify-Clone/songs/")
-let response = await a.text();
-let div = document.createElement("div")
-div.innerHTML = response;
-let as = div.getElementsByTagName("a")
-let songs = []
-for (let index = 0; index < as.length; index++) {
-    const element = as[index];
-    if (element.href.endsWith(".mp3")) {
-    let parts = element.href.split("http://127.0.0.1:5500/spotify-Clone/songs/");
-    songs.push(parts[1]);
-}
-}
-return songs
-}
-
- const playMusic = (track, pause=true) => {
-    currentSong.src = (`/spotify-Clone/songs/${track}`)
-    if(!pause){
-        currentSong.play();
-        play.src = "images/pause.svg"
-
+    let a = await fetch("http://127.0.0.1:5500/spotify-Clone/songs/")
+    let response = await a.text();
+    let div = document.createElement("div")
+    div.innerHTML = response;
+    let as = div.getElementsByTagName("a")
+    let songs = []
+    for (let index = 0; index < as.length; index++) {
+        const element = as[index];
+        if (element.href.endsWith(".mp3")) {
+            let parts = element.href.split("http://127.0.0.1:5500/spotify-Clone/songs/");
+            songs.push(parts[1]);
+        }
     }
+    return songs
+}
+
+const playMusic = (track, pause = true) => {
+    currentSong.src = `/spotify-Clone/songs/${track}`;
+
     let title = decodeURIComponent(track).replace(".mp3", "");
     document.querySelector(".song-info").innerHTML = title;
-    document.querySelector(".song-time").innerHTML = "00:00 / 00:00"
+    document.querySelector(".song-time").innerHTML = "00:00 / 00:00";
+
+    currentSong.onloadedmetadata = () => {
+        document.querySelector(".song-time").innerHTML =
+            `00:00 / ${secondsToMinutesSecond(currentSong.duration)}`;
+    };
+
+    if (!pause) {
+        currentSong.play();
+        play.src = "images/pause.svg";
+    }
 };
 
 async function main() {
-    let play = document.getElementById("play"); // Moved to top
+    let play = document.getElementById("play");
 
-    let songs = await getSongs();
+     songs = await getSongs();
 
     let songUl = document.querySelector(".song-list").getElementsByTagName("ul")[0];
     for (const song of songs) {
@@ -65,21 +71,18 @@ async function main() {
         </li>`;
     }
 
-    // Auto-play the first song
     if (songs.length > 0) {
         playMusic(songs[0]);
     }
 
-    // Attach event listeners to each song
     Array.from(document.querySelector(".song-list").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", () => {
             const track = e.getAttribute("data-song");
             console.log("Playing:", track);
-            playMusic(track);
+            playMusic(track, false);
         });
     });
 
-    // Play/pause button logic
     play.addEventListener("click", () => {
         if (currentSong.paused) {
             currentSong.play();
@@ -90,34 +93,42 @@ async function main() {
         }
     });
 
-    // Update time while playing
     currentSong.addEventListener("timeupdate", () => {
-        document.querySelector(".song-time").innerHTML =
-            `${secondsToMinutesSecond(currentSong.currentTime)}/${secondsToMinutesSecond(currentSong.duration)}`;
-            document.querySelector(".circle").style.left = (currentSong.currentTime/ currentSong.duration)* 100 + "%";
+        if (!isNaN(currentSong.duration)) {
+            document.querySelector(".song-time").innerHTML =
+                `${secondsToMinutesSecond(currentSong.currentTime)} / ${secondsToMinutesSecond(currentSong.duration)}`;
+            document.querySelector(".circle").style.left = (currentSong.currentTime / currentSong.duration) * 100 + "%";
+        }
     });
 
-    document.querySelector(".seekbar").addEventListener("click" , e => {
-        let percent = (e.offsetX/e.target.getBoundingClientRect().width) * 100;
-        document.querySelector(".circle").style.left = percent +"%";
-        currentSong.currentTime = ((currentSong.duration) * percent )/100
-        
+    document.querySelector(".seekbar").addEventListener("click", e => {
+        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+        document.querySelector(".circle").style.left = percent + "%";
+        currentSong.currentTime = (currentSong.duration * percent) / 100;
     });
 
-    // Toggle sidebar open on hamburger click
-document.querySelector(".hamburger").addEventListener("click", () => {
-    document.querySelector(".left").style.left = "0";
-});
+    document.querySelector(".hamburger").addEventListener("click", () => {
+        document.querySelector(".left").style.left = "0";
+    });
 
-// Toggle sidebar close on 'x' button click
-document.querySelector(".close").addEventListener("click", () => {
-    document.querySelector(".left").style.left = "-120%";
-});
-s
+    document.querySelector(".close").addEventListener("click", () => {
+        document.querySelector(".left").style.left = "-120%";
+    });
+
+   previous.addEventListener("click", () => {
+    let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
+    if ((index - 1) >= 0) {
+        playMusic(songs[index - 1], false);
+    }
+    });
+
+next.addEventListener("click", () => {
+    let index = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
+    if ((index + 1) < songs.length) {
+        playMusic(songs[index + 1], false);
+    }
+    });
+
 }
 
-
 main();
-
-
-
