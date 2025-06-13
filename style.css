@@ -166,7 +166,7 @@ body{
 .song-buttons {
     position: absolute;
     left: 50%;
-    top: 53%;
+    top: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     gap: 16px;
@@ -209,6 +209,9 @@ body{
       font-size: 13px;
       width:344px;
 }
+.info div{
+    word-break: break-all;
+}
 .play-now{
     display: flex;
     font-size: 10px;
@@ -244,18 +247,41 @@ body{
     justify-content: space-between;
     align-items: center;
     gap: 20px;
+    margin-top: 10px;
 }
 .song-info{
-    /* margin-right: 142px; */
+     width: 270px;
     color: black;
-    padding: 10px;
+    padding : 0 12px;
 }
 .song-time{
+    width: 200x;
     color: black;
+    padding : 0 12px;
+}
+.timevol{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.timevol img{
+    width: 20px;
+}
+.volume{
+    display: flex;
+    flex-direction: column;
+}
+.range{
+    display: flex;
+    justify-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+
 }
 @media (max-width: 1400px) {
     .left{
         background-color: black;
+        padding: 0;
         position: absolute;
         left: -120%;
         transition: all.3s ease;
@@ -282,7 +308,7 @@ body{
         width: 100vw;
     }
     .playbar{
-      width: 93vw;
+      width: 95vw;
       bottom: 0;
       position: fixed;
     }

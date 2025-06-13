@@ -1,6 +1,8 @@
-console.log('Lets write Javascript');
+//JAVASCRIPT CODE 
+
 let currentSong = new Audio();
 let songs;
+let currFolder;
 
 function secondsToMinutesSecond(seconds) {
     if (isNaN(seconds) || seconds < 0) {
@@ -16,47 +18,24 @@ function secondsToMinutesSecond(seconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-async function getSongs() {
-    let a = await fetch("http://127.0.0.1:5500/spotify-Clone/songs/")
+async function getSongs(folder) {
+    currFolder = folder;
+    let a = await fetch(`http://127.0.0.1:5500/spotify-Clone/${currFolder}/`)
     let response = await a.text();
     let div = document.createElement("div")
     div.innerHTML = response;
     let as = div.getElementsByTagName("a")
-    let songs = []
+    songs = []
     for (let index = 0; index < as.length; index++) {
         const element = as[index];
         if (element.href.endsWith(".mp3")) {
-            let parts = element.href.split("http://127.0.0.1:5500/spotify-Clone/songs/");
+            let parts = element.href.split(`http://127.0.0.1:5500/spotify-Clone/${folder}/`);
             songs.push(parts[1]);
         }
     }
-    return songs
-}
-
-const playMusic = (track, pause = true) => {
-    currentSong.src = `/spotify-Clone/songs/${track}`;
-
-    let title = decodeURIComponent(track).replace(".mp3", "");
-    document.querySelector(".song-info").innerHTML = title;
-    document.querySelector(".song-time").innerHTML = "00:00 / 00:00";
-
-    currentSong.onloadedmetadata = () => {
-        document.querySelector(".song-time").innerHTML =
-            `00:00 / ${secondsToMinutesSecond(currentSong.duration)}`;
-    };
-
-    if (!pause) {
-        currentSong.play();
-        play.src = "images/pause.svg";
-    }
-};
-
-async function main() {
-    let play = document.getElementById("play");
-
-     songs = await getSongs();
 
     let songUl = document.querySelector(".song-list").getElementsByTagName("ul")[0];
+    songUl.innerHTML = ""
     for (const song of songs) {
         songUl.innerHTML += `<li data-song="${song}">
             <img class="invert" src="/Spotify-Clone/images/music.svg" alt="">
@@ -78,10 +57,37 @@ async function main() {
     Array.from(document.querySelector(".song-list").getElementsByTagName("li")).forEach(e => {
         e.addEventListener("click", () => {
             const track = e.getAttribute("data-song");
-            console.log("Playing:", track);
             playMusic(track, false);
         });
     });
+
+    return songs
+}
+
+const playMusic = (track, pause = true) => {
+    currentSong.src = `/spotify-Clone/${currFolder}/${track}`;
+
+    let title = decodeURIComponent(track).replace(".mp3", "");
+    document.querySelector(".song-info").innerHTML = title;
+    document.querySelector(".song-time").innerHTML = "00:00 / 00:00";
+
+    currentSong.onloadedmetadata = () => {
+        document.querySelector(".song-time").innerHTML =
+            `00:00 / ${secondsToMinutesSecond(currentSong.duration)}`;
+    };
+
+    if (!pause) {
+        currentSong.play();
+        play.src = "images/pause.svg";
+    }
+};
+
+async function main() {
+    let play = document.getElementById("play");
+
+    await getSongs("songs/Satinder_Sartaaj");
+
+    
 
     play.addEventListener("click", () => {
         if (currentSong.paused) {
@@ -128,7 +134,17 @@ next.addEventListener("click", () => {
         playMusic(songs[index + 1], false);
     }
     });
+    
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change",(e)=>{
+        currentSong.volume = parseInt(e.target.value)/100
+        
+    })
 
+    Array.from(document.getElementsByClassName("card")).forEach(e=>{
+        e.addEventListener("click",async item =>{
+            songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`)
+        })
+    })
 }
 
 main();
