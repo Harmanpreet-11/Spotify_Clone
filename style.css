@@ -73,32 +73,80 @@ body{
 
 .cardContainer{
     display: flex;
-    justify-content: center;
-    gap: 10px;
+    justify-content: flex-start;
+    gap: 12px;
     flex-wrap: wrap;
     margin: 5px;
     overflow-y:auto;
     max-height: 70vh;
 }
 .card{
-    width: 200px;
+    width: 160px;
     padding: 10px;
     border-radius: 5px;
-    background-color: #252525;
     position: relative;
+    cursor: pointer;
 }
-.card >*{
-    padding-top: 10px;
+.card p{
+  margin-bottom: 0px;
 }
 .card img{
     width: 100%;
     object-fit: contain;
 
 }
+.card h2{
+    font-size: large;
+    margin-bottom: revert;
+}
 .card p{
      margin-top: auto;
-    font-size: 0.85rem;
+    font-size: smaller;
 }
+.circle-cards{
+    position: relative;
+    padding: 25px;
+}
+.circle-cards h1{
+    font-size: xx-large;
+    padding: 10px;
+    cursor: pointer;
+}
+.circle-cards h1:hover{
+    text-decoration: underline;
+
+}
+.circleCardContainer{
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin: 5px;
+    overflow-y: auto;
+    max-height: 70vh;
+}
+.card1{
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+}
+.card1:hover{
+    background-color: #252525;
+    cursor: pointer;
+}
+.card1 img{
+    width: 150px;
+   border-radius: 50%;
+}
+.card1 h2{
+    font-size: larger;
+    display: flex;
+    justify-content:flex-start;
+}
+.card1 p{
+    font-size: small;
+}
+
 
 .play{
     width: 30px;
@@ -108,9 +156,9 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    top: 168px;
+    top: 130px;
     position:absolute;
-    right: 17px;
+    right: 13px;
     transition: transform 0.5s ease;
     opacity: 0;
 
@@ -152,10 +200,15 @@ body{
 }
 .spotify-playlist{
     position: relative;
-    padding: 16px;
+    padding: 25px;
 }
-.spotify-playlist .h1{
-    padding: 16px;
+.spotify-playlist h1{
+    padding: 10px;
+    font-size: xx-large;
+    cursor: pointer;
+}
+.spotify-playlist h1:hover{
+    text-decoration: underline;
 }
 .playbar {
     bottom: 0;
@@ -163,8 +216,8 @@ body{
     min-height: 40px;
     background: #e2d9d9;
     filter: invert(1);
-    width: 70vw;
-    border-radius: 15px;
+    width: 71vw;
+    border-radius: 30px;
     padding: 12px;
 }
 
@@ -226,7 +279,7 @@ body{
 }
 .seekbar {
     height: 4px;
-    width: 98%;
+    width: 97%;
     background:  black;
     position: absolute;
     border-radius: 10px;
@@ -311,6 +364,9 @@ body{
         flex-direction: column;
         gap: 33px;
         align-items: center;
+    }
+    .song-info{
+        width: auto;
     }
 
     .right{
