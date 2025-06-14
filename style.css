@@ -95,6 +95,11 @@ body{
     object-fit: contain;
 
 }
+.card p{
+     margin-top: auto;
+    font-size: 0.85rem;
+}
+
 .play{
     width: 30px;
     height: 30px;
@@ -271,12 +276,16 @@ body{
     display: flex;
     flex-direction: column;
 }
+.volume img{
+    cursor: pointer;
+}
 .range{
     display: flex;
     justify-content: center;
     margin-left: 10px;
+}
+.range input{
     cursor: pointer;
-
 }
 @media (max-width: 1400px) {
     .left{

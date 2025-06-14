@@ -82,11 +82,29 @@ const playMusic = (track, pause = true) => {
     }
 };
 
+
+async function displayAlbums() {
+    let a = await fetch(`http://127.0.0.1:5500/Spotify-Clone/songs`)
+    let response = await a.text();
+    let div = document.createElement("div")
+    div.innerHTML = response;
+    let anchors = div.getElementsByTagName("a")
+    Array.from(anchors).forEach(e=>{
+        if(e.href.startsWith("/songs")){
+            console.log(e.href);
+            
+        }
+    })
+    
+}
 async function main() {
     let play = document.getElementById("play");
 
     await getSongs("songs/Satinder_Sartaaj");
+    playMusic(songs[0], true)
 
+
+    displayAlbums()
     
 
     play.addEventListener("click", () => {
@@ -145,6 +163,25 @@ next.addEventListener("click", () => {
             songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`)
         })
     })
+
+    let isMuted = false;
+
+    document.querySelector(".volume>img").addEventListener("click", e => {
+    const img = e.target;
+
+    if (!isMuted) {
+        img.src = "images/mute.svg";
+        currentSong.volume = 0;
+        isMuted = true;
+        document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+    } else {
+        img.src = "images/volume.svg";
+        currentSong.volume = 1;
+        isMuted = false;
+        document.querySelector(".range").getElementsByTagName("input")[0].value = 10;
+    }
+    });
+ 
 }
 
 main();
